@@ -1,4 +1,11 @@
+using CitySearch.Utils;
+
+var config = new ConfigurationBuilder().AddEnvironmentVariables().Build();
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddSingleton<IConfiguration>(config);
+builder.Services.AddSingleton<IDataLoader, DataLoader>();
+builder.Services.AddSingleton<ICityTrie, CityTrie>();
 
 // Add services to the container.
 
@@ -23,3 +30,4 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
