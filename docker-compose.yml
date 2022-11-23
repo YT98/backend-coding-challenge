@@ -1,0 +1,12 @@
+version: '3.2'
+
+services:
+  app:
+    image: citysearch.api
+    ports:
+      - "8080:80"
+    build:
+      context: .
+      dockerfile: CitySearch/Dockerfile
+    env_file:
+      - .env
