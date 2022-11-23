@@ -1,6 +1,16 @@
 # Coveo Backend Coding Challenge
 (inspired by https://github.com/busbud/coding-challenge-backend-c)
 
+## Description
+
+Hosted on AWS, here is an example request: http://3.144.161.239/suggestions?q=Lon&latitude=32&longitude=32
+
+- .NET WebApi
+- Simple CI pipeline set-up with Github Actions, runs tests on push and on merge-request
+- Application is containerized and runs in the AWS instance on Docker
+- No database was used, data file is read locally and data is stored in a Trie data structure
+
+
 ## Requirements
 
 Design a REST API endpoint that provides auto-complete suggestions for large cities.
