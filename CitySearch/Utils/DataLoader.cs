@@ -26,7 +26,7 @@ public class DataLoader : IDataLoader
 
     public List<City> LoadCities()
     {
-        List<City> cityList = new List<City>();
+        List<City> cityList = new();
         IEnumerable<string[]> dataFileLines = ReadDataFileValues();
         foreach (string[] values in dataFileLines)
         {

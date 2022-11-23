@@ -5,12 +5,10 @@ using CitySearch.Models;
 
 public class CityTrie : ICityTrie
 {
-    static Node root = new Node(' ');
-    private readonly IDataLoader _dataLoader;
+    private static readonly Node root = new (' ');
 
     public CityTrie(IDataLoader dataLoader)
     {
-        _dataLoader = dataLoader;
         foreach (City city in dataLoader.LoadCities())
         {
             InsertCity(city);
@@ -36,9 +34,9 @@ public class CityTrie : ICityTrie
 
         public Node? GetChildIfKeyExists(char key)
         {
-            if (children.ContainsKey(key))
+            if (children.TryGetValue(key, out Node? value))
             {
-                return children[key];
+                return value;
             }
             else
             {
@@ -51,7 +49,7 @@ public class CityTrie : ICityTrie
             Node? child = GetChildIfKeyExists(key);
             if (child == null)
             {
-                Node newNode = new Node(key);
+                Node newNode = new (key);
                 AddChild(newNode);
                 child = newNode;
             }
@@ -71,7 +69,7 @@ public class CityTrie : ICityTrie
         return FindAllSubTreeCities(node);
     }
 
-    private void InsertCity(City city)
+    private static void InsertCity(City city)
     {
         Node node = root;
         foreach (char character in city.name)
@@ -83,7 +81,7 @@ public class CityTrie : ICityTrie
 
     private List<City> FindAllSubTreeCities(Node node)
     {
-        List<City> cities = new List<City>();
+        List<City> cities = new ();
 
         if (node.city != null) { cities.Add(node.city); }
         if (node.children.Count > 0)
