@@ -50,11 +50,12 @@ public class SuggestionsController : ControllerBase
     public List<JsonObject> Get(string q, float? latitude = null, float? longitude = null)
     {
         List<ScoredCity> cityList = _cityTrie.FindMatches(q);
-        List<ScoredCity> scoredCityList = SortCityList(cityList);
         if (latitude != null && longitude != null)
         {
             SetLocationScoreCityList(cityList, (float)latitude, (float)longitude);
         }
+        List<ScoredCity> scoredCityList = SortCityList(cityList);
+
         return ConvertScoredCityListToJson(scoredCityList);
     }
 }
