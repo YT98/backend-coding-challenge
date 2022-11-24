@@ -31,13 +31,38 @@ public class City
 
 public class ScoredCity : City
 {
-    public float score;
+    public float? locationScore;
+    public float resultScore;
+    public int trieDepth;
 
-    public ScoredCity(City city, float latitude, float longitude) : base(city.name, city.country, city.latitude, city.longitude)
+    public ScoredCity(City city, float resultScore) : base(city.name, city.country, city.latitude, city.longitude)
     {
-        score = CityScorer.GetScore(
+        this.resultScore = resultScore;
+    }
+
+    public ScoredCity(City city, float resultScore, float latitude, float longitude) : base(city.name, city.country, city.latitude, city.longitude)
+    {
+        this.resultScore = resultScore;
+        SetLocationScore(latitude, longitude);
+    }
+
+    public void SetLocationScore(float latitude, float longitude)
+    {
+        locationScore = CityScorer.GetScore(
             this.latitude, this.longitude,
             latitude, longitude);
+    }
+
+    public float GetScore()
+    {
+        if (locationScore == null)
+        {
+            return resultScore;
+        } 
+        else
+        {
+            return (resultScore + (float)locationScore)/2;
+        }
     }
 
     public new JsonObject ToJson()
@@ -47,7 +72,7 @@ public class ScoredCity : City
             { "name", name },
             { "latitude", latitude },
             { "longitude", longitude },
-            { "score", score }
+            { "score", GetScore() }
         };
     }
 }

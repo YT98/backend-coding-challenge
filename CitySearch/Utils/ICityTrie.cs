@@ -4,5 +4,5 @@ using  CitySearch.Models;
 
 public interface ICityTrie
 {
-    public List<City> FindMatches(string query);
+    public List<ScoredCity> FindMatches(string query);
 }
