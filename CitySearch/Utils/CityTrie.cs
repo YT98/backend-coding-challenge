@@ -58,15 +58,15 @@ public class CityTrie : ICityTrie
 
     }
 
-    public List<City> FindMatches(string query)
+    public List<ScoredCity> FindMatches(string query)
     {
         Node? node = root;
         foreach (char character in query)
         {
             node = node.GetChildIfKeyExists(character);
-            if (node == null) { return new List<City>(); }
+            if (node == null) { return new List<ScoredCity>(); }
         }
-        return FindAllSubTreeCities(node);
+        return FindAllSubTreeCities(node, 1);
     }
 
     private static void InsertCity(City city)
@@ -79,16 +79,24 @@ public class CityTrie : ICityTrie
         node.city = city;
     }
 
-    private List<City> FindAllSubTreeCities(Node node)
+    private List<ScoredCity> FindAllSubTreeCities(Node node, int startingDepth)
     {
-        List<City> cities = new ();
+        // Throw error if depth < 1
+        List<ScoredCity> cities = new ();
+        int depth = startingDepth;
 
-        if (node.city != null) { cities.Add(node.city); }
+        if (node.city != null) 
+        {
+            float resultScore = 1 / (float)depth;
+            ScoredCity city = new(node.city, resultScore);
+            cities.Add(city);
+        }
         if (node.children.Count > 0)
         {
+            depth++;
             foreach (KeyValuePair<char, Node> entry in node.children)
             {
-                cities.AddRange(FindAllSubTreeCities(entry.Value));
+                cities.AddRange(FindAllSubTreeCities(entry.Value, depth));
             }
         }
 

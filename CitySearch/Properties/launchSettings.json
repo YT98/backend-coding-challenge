@@ -16,7 +16,7 @@
       "launchUrl": "swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "DATA_FILE_PATH": "../data/cities_canada-usa.tsv",
+        "DATA_FILE_PATH": "data/cities_canada-usa.tsv",
         "DATA_NAME_INDEX": "2",
         "DATA_COUNTRY_INDEX": "8",
         "DATA_LATITUDE_INDEX": "4",

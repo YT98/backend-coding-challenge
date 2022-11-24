@@ -1,7 +1,6 @@
 ﻿using CitySearch.Models;
 using CitySearch.Utils;
 using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
 using System.Text.Json.Nodes;
 
 namespace CitySearch.Controllers;
@@ -27,28 +26,35 @@ public class SuggestionsController : ControllerBase
         return result;
     }
 
-    private static List<ScoredCity> ScoreAndSortCityList(List<City> cityList, float latitude, float longitude)
+    private static List<ScoredCity> SortCityList(List<ScoredCity> cityList)
     {
-        List<ScoredCity> scoredCityJsonArray = new();
-        foreach (City city in cityList)
+        List<ScoredCity> scoredCityList = new();
+        foreach (ScoredCity city in cityList)
         {
-            scoredCityJsonArray.Add(ScoreCity(city: city, latitude: latitude, longitude: longitude));
+            scoredCityList.Add(city);
         }
-        scoredCityJsonArray.Sort((x, y) => x.score.CompareTo(y.score));
-        scoredCityJsonArray.Reverse();
-        return scoredCityJsonArray;
+        scoredCityList.Sort((x, y) => x.GetScore().CompareTo(y.GetScore()));
+        scoredCityList.Reverse();
+        return scoredCityList;
     }
 
-    private static ScoredCity ScoreCity(City city, float latitude, float longitude)
+    private static void SetLocationScoreCityList(List<ScoredCity> cityList, float latitude, float longitude)
     {
-        return new ScoredCity(city: city, latitude: latitude, longitude: longitude);
+        foreach (ScoredCity city in cityList)
+        {
+            city.SetLocationScore(latitude, longitude);
+        }
     }
 
     [HttpGet(Name="Suggestions")]
-    public List<JsonObject> Get(string q, float latitude, float longitude)
+    public List<JsonObject> Get(string q, float? latitude = null, float? longitude = null)
     {
-        List<City> cityList = _cityTrie.FindMatches(q);
-        List<ScoredCity> scoredCityList = ScoreAndSortCityList(cityList, latitude, longitude);
+        List<ScoredCity> cityList = _cityTrie.FindMatches(q);
+        List<ScoredCity> scoredCityList = SortCityList(cityList);
+        if (latitude != null && longitude != null)
+        {
+            SetLocationScoreCityList(cityList, (float)latitude, (float)longitude);
+        }
         return ConvertScoredCityListToJson(scoredCityList);
-    } 
+    }
 }

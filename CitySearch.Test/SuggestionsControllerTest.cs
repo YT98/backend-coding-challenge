@@ -11,23 +11,23 @@ public class SuggestionsControllerTest
     private readonly Mock<ICityTrie> _mockCityTrie = new();
 
     [Fact]
-    public void Get_ReturnListOrderedByDescendingScore()
+    public void Get_ReturnListOrderedByDescendingLocationScore()
     {
         (float, float) location = (0.0f, 0.0f);
-        City city1 = new ("Montreal", "CA", 1.0f, 1.0f);
-        City city2 = new ("Montreal", "CA", 2.0f, 2.0f);
-        City city3 = new ("Montreal", "CA", 3.0f, 3.0f);
-        ScoredCity scoredCity1 = new (city1, location.Item1, location.Item2);
-        ScoredCity scoredCity2 = new (city2, location.Item1, location.Item2);
-        ScoredCity scoredCity3 = new (city3, location.Item1, location.Item2);
+        City city1 = new ("Montr", "CA", 1.0f, 1.0f);
+        City city2 = new ("Monta", "CA", 2.0f, 2.0f);
+        City city3 = new ("Montb", "CA", 3.0f, 3.0f);
+        ScoredCity scoredCity1 = new (city1, 0.5f, location.Item1, location.Item2);
+        ScoredCity scoredCity2 = new (city2, 0.5f, location.Item1, location.Item2);
+        ScoredCity scoredCity3 = new (city3, 0.5f, location.Item1, location.Item2);
 
         _mockCityTrie.Setup(x => x.FindMatches(It.IsAny<string>())).Returns(
-                new List<City>() {city2, city3, city1}
+                new List<ScoredCity>() { scoredCity2, scoredCity3, scoredCity1 }
             );
 
         SuggestionsController suggestionsController = new (_mockCityTrie.Object);
 
-        List<JsonObject> result = suggestionsController.Get("Mon", location.Item1, location.Item2);
+        List<JsonObject> result = suggestionsController.Get("Mont", location.Item1, location.Item2);
 
         string scoredCity1String = scoredCity1.ToJson().ToString();
         string scoredCity2String = scoredCity2.ToJson().ToString();
